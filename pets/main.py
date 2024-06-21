@@ -81,6 +81,7 @@ async def third_party_stock(product_id: int):
 async def central_warehouse(product_id: int):
     # Simula a verificação de estoque no armazém central
     await asyncio.sleep(random.uniform(0.1, 0.5))  # Simula latência
+    print("problema ao se conectar com o armazem central FLAG CENTRAL232323")
     raise HTTPException(status_code=500, detail="Internal server error")
 
 @app.get("/pets/check_stock/{product_id}")
