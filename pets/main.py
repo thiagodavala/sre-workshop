@@ -27,6 +27,8 @@ app = FastAPI()
 FastAPIInstrumentor.instrument_app(app)
 HTTPXClientInstrumentor().instrument()
 
+feature_flag = {"history_enabled": False}
+
 @app.get("/")
 async def read_root():
     return {"message": "Au! Au!"}
@@ -107,9 +109,27 @@ class LoginData(BaseModel):
 
 @app.post("/login")
 async def login(data: LoginData):
-    # Aqui você pode adicionar lógica de autenticação, como verificar o login e senha em um banco de dados.
+    print("User "+data.login+" tried to login")
     if data.login == "admin" and data.password == "secret":
         return {"message": "Login successful"}
     else:
         raise HTTPException(status_code=401, detail="Invalid login or password")
+    
 
+class FeatureFlagData(BaseModel):
+    value: bool
+    key: str
+
+@app.get("/pets/history")
+async def get_history():
+    if not feature_flag["history_enabled"]:
+        raise HTTPException(status_code=500, detail="Feature flag is disabled")
+    return {"history": "Pet purchase history, FLAG is VOCESSAOFERADEMAIS"}
+
+@app.post("/pets/history/flag")
+async def set_history_flag(data: FeatureFlagData):
+    if data.key == "FDASF$Q":
+        feature_flag["history_enabled"] = data.value
+        return {"message": "Feature flag updated successfully"}
+    else:
+        raise HTTPException(status_code=401, detail="Invalid key")
