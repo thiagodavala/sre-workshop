@@ -34,6 +34,10 @@ class UserBehavior(TaskSet):
         for payload in payloads:
             self.client.post("/login", json=payload)
 
+    @task(7)
+    def history(self):
+        self.client.get("/pets/history")
+
 class WebsiteUser(HttpUser):
     tasks = [UserBehavior]
     wait_time = between(1, 5)
